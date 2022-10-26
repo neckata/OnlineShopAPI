@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OnlineShopAPI</name>
+    </assembly>
+    <members>
+        <member name="M:OnlineShopAPI.Controllers.ProductController.Get">
+            <summary>
+            Returns all products
+            </summary>
+            <returns>List of products</returns>
+        </member>
+        <member name="M:OnlineShopAPI.Controllers.ProductController.Get(System.Guid)">
+            <summary>
+            Returns detailed information for a product
+            </summary>
+            <param name="id">Product ID</param>
+            <returns>Product</returns>
+        </member>
+        <member name="M:OnlineShopAPI.Controllers.ProductController.Delete(System.Guid)">
+            <summary>
+            Deletes a product
+            </summary>
+            <param name="id">Product ID</param>
+            <returns>Status Reponse</returns>
+        </member>
+        <member name="M:OnlineShopAPI.Controllers.ProductController.Add(OnlineShopAPI.Models.ProductViewModel)">
+            <summary>
+            Adds a products
+            </summary>
+            <param name="model"></param>
+            <returns>New Product</returns>
+        </member>
+        <member name="M:OnlineShopAPI.Controllers.ProductController.Update(System.Guid,OnlineShopAPI.Models.ProductViewModel)">
+            <summary>
+            Updates a products
+            </summary>
+            <param name="id">Product ID</param>
+            <param name="model">Product Model</param>
+            <returns>Status Response</returns>
+        </member>
+    </members>
+</doc>
