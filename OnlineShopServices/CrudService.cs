@@ -114,8 +114,6 @@ namespace OnlineShopServices.Service
                 var value = entityProperty.GetValue(entity);
 
                 modelProperty.SetValue(entityModel, value, null);
-
-                break;
             }
 
             Repository.Update(entityModel);

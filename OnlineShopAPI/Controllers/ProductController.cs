@@ -78,7 +78,7 @@ namespace OnlineShopAPI.Controllers
         }
 
         /// <summary>
-        /// Adds a products
+        /// Adds a product
         /// </summary>
         /// <param name="model"></param>
         /// <returns>New Product</returns>
@@ -100,13 +100,12 @@ namespace OnlineShopAPI.Controllers
         }
 
         /// <summary>
-        /// Updates a products
+        /// Updates a product
         /// </summary>
-        /// <param name="id">Product ID</param>
         /// <param name="model">Product Model</param>
         /// <returns>Status Response</returns>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, ProductViewModel model)
+        [HttpPut]
+        public async Task<IActionResult> Update(ProductViewModel model)
         {
             var response = await _productService.UpdateAsync(new OnlineShopDal.Entities.Product
             {
