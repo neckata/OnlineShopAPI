@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OnlineShopAPI.Models;
+using OnlineShopServices.Product;
+using OnlineShopServices.Service.Response;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OnlineShopAPI.Controllers
 {
@@ -9,9 +13,11 @@ namespace OnlineShopAPI.Controllers
     [Route("[controller]")]
     public class ProductController : ControllerBase
     {
-        public ProductController()
-        {
+        private readonly IProductService _productService;
 
+        public ProductController(IProductService productService)
+        {
+            _productService = productService;
         }
 
         /// <summary>
@@ -19,28 +25,18 @@ namespace OnlineShopAPI.Controllers
         /// </summary>
         /// <returns>List of products</returns>
         [HttpGet]
-        public List<ProductViewModel> Get()
+        public async Task<List<ProductViewModel>> Get()
         {
-            var data = new List<ProductViewModel>
-            {
-                new ProductViewModel
-                {
-                    Id = new Guid(),
-                    Name = "Food"
-                },
-                new ProductViewModel
-                {
-                    Id = new Guid(),
-                    Name = "Water"
-                },
-                new ProductViewModel
-                {
-                    Id = new Guid(),
-                    Name = "Clothes"
-                }
-            };
+            var response = await _productService.GetAllAsync();
 
-            return data;
+            var products = response.Data.Select(x => new ProductViewModel
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Price = x.Price
+            }).ToList(); ;
+
+            return products;
         }
 
         /// <summary>
@@ -49,15 +45,18 @@ namespace OnlineShopAPI.Controllers
         /// <param name="id">Product ID</param>
         /// <returns>Product</returns>
         [HttpGet("{id}")]
-        public ProductViewModel Get(Guid id)
+        public async Task<ProductViewModel> Get(Guid id)
         {
-            var data = new ProductViewModel
+            var response = await _productService.GetByIdAsync(id);
+
+            var product = new ProductViewModel
             {
-                Id = new Guid(),
-                Name = "Clothes"
+                Id = response.Data.Id,
+                Name = response.Data.Name,
+                Price = response.Data.Price
             };
 
-            return data;
+            return product;
         }
 
         /// <summary>
@@ -66,9 +65,16 @@ namespace OnlineShopAPI.Controllers
         /// <param name="id">Product ID</param>
         /// <returns>Status Reponse</returns>
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            return Ok();
+            var response = await _productService.DeleteAsync(id);
+
+            if (response.Type != ResponseType.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
         }
 
         /// <summary>
@@ -77,9 +83,20 @@ namespace OnlineShopAPI.Controllers
         /// <param name="model"></param>
         /// <returns>New Product</returns>
         [HttpPost]
-        public Guid Add(ProductViewModel model)
+        public async Task<IActionResult> Add(ProductViewModel model)
         {
-            return new Guid();
+            var response = await _productService.AddAsync(new OnlineShopDal.Entities.Product
+            {
+                Name = model.Name,
+                Price = model.Price
+            });
+
+            if (response.Type != ResponseType.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
         }
 
         /// <summary>
@@ -89,9 +106,21 @@ namespace OnlineShopAPI.Controllers
         /// <param name="model">Product Model</param>
         /// <returns>Status Response</returns>
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, ProductViewModel model)
+        public async Task<IActionResult> Update(Guid id, ProductViewModel model)
         {
-            return Ok();
+            var response = await _productService.UpdateAsync(new OnlineShopDal.Entities.Product
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Price = model.Price
+            });
+
+            if (response.Type != ResponseType.Success)
+            {
+                return BadRequest(response);
+            }
+
+            return Ok(response);
         }
     }
 }

@@ -1,9 +1,14 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using OnlineShopDal;
+using OnlineShopDal.Databases.Postgres;
+using OnlineShopServices.Product;
 using System;
 using System.IO;
 using System.Reflection;
@@ -37,6 +42,26 @@ namespace OnlineShopAPI
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+            });
+
+
+            services.AddDbContextPool<PostgresDbContext>(opt =>
+            {
+                opt.UseNpgsql(Configuration.GetConnectionString("PostgresDbContext"));
+            });
+
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            services.AddTransient<IProductService, ProductService>();
+
+            services.AddCors(config =>
+            {
+                var policy = new CorsPolicy();
+                policy.Headers.Add("*");
+                policy.Methods.Add("*");
+                policy.Origins.Add("*");
+                //policy.SupportsCredentials = true;
+                config.AddPolicy("online-shop", policy);
             });
         }
 
