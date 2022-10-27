@@ -11,7 +11,7 @@ namespace OnlineShopDal.Databases.Postgres
         public PostgresDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<PostgresDbContext>();
-            optionsBuilder.UseNpgsql("Server=207.154.194.168;Port=5410;Database=postgres;User Id=postgres;Password=Shop2021!;CommandTimeout=20;");
+            optionsBuilder.UseNpgsql("User ID=ShopUser;Password=AVNS_vEntuOQrfN6Rt3BhVxQ;Host=online-shop-database-do-user-12751369-0.b.db.ondigitalocean.com;Port=25060;Database=OnlineShop;sslmode=Require;Trust Server Certificate=true;");
 
             return new PostgresDbContext(optionsBuilder.Options);
         }
